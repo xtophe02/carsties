@@ -1,0 +1,26 @@
+{
+  "name": "auction-service",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node src/app.js",
+    "seed": "node seed.js",
+    "dev": "node --watch src/app.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^4.x",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "prisma": "^4.x"
+  }
+}

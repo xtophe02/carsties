@@ -59,6 +59,7 @@ export async function getAuctions(req, res) {
         item: true,
       },
     });
+    // logger.debug(JSON.stringify(auctions));
     res.json(auctions);
   } catch (error) {
     logger.error("Error fetching auctions:", error);
@@ -86,37 +87,82 @@ export async function getAuctionById(req, res) {
 
 export async function updateAuction(req, res) {
   try {
+    const { id } = req.params;
+    logger.info(`Updating auction with ID: ${id}`);
+    logger.debug(`Update payload:`, req.body);
+
+    // First, verify the auction exists and user has permission
     const auction = await prisma.auction.findUnique({
-      where: { id: req.params.id },
+      where: { id },
+      include: { item: true },
     });
 
+    logger.debug(`Found auction:`, auction);
+
     if (!auction) {
+      logger.warn(`Auction not found with ID: ${id}`);
       return res.status(404).json({ error: "Auction not found" });
     }
 
     if (auction.seller !== req.user.username) {
+      logger.warn(`Unauthorized update attempt by user: ${req.user.username}`);
       return res.status(403).json({ error: "Unauthorized" });
     }
 
-    const updatedAuction = await prisma.auction.update({
-      where: { id: req.params.id },
-      data: req.body,
+    // Only allow specific item fields
+    const allowedFields = ["make", "model", "color", "mileage", "year"];
+    const itemUpdate = {};
+
+    // Only include fields that are present in the request and allowed
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        itemUpdate[field] = req.body[field];
+      }
+    });
+
+    logger.debug(`Item update payload:`, itemUpdate);
+
+    // Only update if there are valid fields to update
+    if (Object.keys(itemUpdate).length === 0) {
+      logger.warn("No valid fields to update");
+      return res.status(400).json({
+        error:
+          "No valid fields to update. Allowed fields: make, model, color, mileage, year",
+      });
+    }
+
+    // Update the item
+    const updatedItem = await prisma.item.update({
+      where: { id: auction.itemId },
+      data: itemUpdate,
+    });
+
+    logger.info(`Successfully updated item for auction ${id}`);
+    logger.debug(`Updated item:`, updatedItem);
+
+    // Return the full auction with updated item
+    const result = await prisma.auction.findUnique({
+      where: { id },
       include: { item: true },
     });
 
-    // await eventBus.publishEvent("auction.updated", updatedAuction);
-    res.json(updatedAuction);
+    res.json(result);
   } catch (error) {
     logger.error("Error updating auction:", error);
-    res.status(500).json({ error: "Error updating auction" });
+    res.status(500).json({
+      error: "Error updating auction",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
   }
 }
 
 export async function deleteAuction(req, res) {
   try {
-    const { id } = req.params;
-    const auction = await auctionService.getAuctionById(id);
-
+    const auction = await prisma.auction.findUnique({
+      where: { id: req.params.id },
+    });
+    logger.debug(JSON.stringify(auction));
     if (!auction) {
       return res.status(404).json({ error: "Auction not found" });
     }

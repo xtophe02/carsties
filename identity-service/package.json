@@ -18,7 +18,8 @@
     "jsonwebtoken": "^9.0.2",
     "bcryptjs": "^2.4.3",
     "express-rate-limit": "~7.4.1",
-    "@prisma/client": "^5.19.1"
+    "@prisma/client": "^5.19.1",
+    "wait-on": "^7.0.1"
   },
   "devDependencies": {
     "prisma": "^5.19.1"

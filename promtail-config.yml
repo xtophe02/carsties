@@ -16,6 +16,12 @@ scrape_configs:
         labels:
           job: auction-service
           __path__: /logs/auction-service/*.log
+    pipeline_stages:
+      - json:
+          expressions:
+            level: level
+            message: message
+            timestamp: timestamp
 
   - job_name: identity-service-logs
     static_configs:
@@ -24,3 +30,9 @@ scrape_configs:
         labels:
           job: identity-service
           __path__: /logs/identity-service/*.log
+    pipeline_stages:
+      - json:
+          expressions:
+            level: level
+            message: message
+            timestamp: timestamp

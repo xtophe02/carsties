@@ -8,7 +8,16 @@
 - PostgreSQL
 - RabbitMQ
 - winston
+- jsonwebtoken
 
-```bash
+# Identity Service
 
-```
+## techs
+
+- Node.js
+- Express
+- Prisma
+- PostgreSQL
+- winston
+- jsonwebtoken
+- bcryptjs

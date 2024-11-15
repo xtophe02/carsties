@@ -9,9 +9,8 @@ RUN npm install
 # Copy the application source code to the container
 COPY . .
 # Generate Prisma Client
-RUN npx prisma generate
-# Expose port for development
-EXPOSE 7001
+RUN npm run prisma:generate
+EXPOSE 7002
 # Default command for development
 CMD ["npm", "run", "dev"]
 
@@ -25,10 +24,9 @@ COPY package*.json ./
 RUN npm install --only=production
 # Copy Prisma schema and generate the Prisma Client
 COPY prisma ./prisma
-RUN npx prisma generate
+RUN npm run prisma:generate
 # Copy the application code, excluding dev files
 COPY . .
-# Expose port for production
-EXPOSE 7001
+EXPOSE 7002
 # Command to run the application in production
 CMD ["npm", "run", "start"]

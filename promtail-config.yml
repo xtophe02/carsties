@@ -17,10 +17,10 @@ scrape_configs:
           job: auction-service
           __path__: /logs/auction-service/*.log
 
-  - job_name: identify-service-logs
+  - job_name: identity-service-logs
     static_configs:
       - targets:
           - localhost
         labels:
-          job: identify-service
-          __path__: /logs/identify-service/*.log
+          job: identity-service
+          __path__: /logs/identity-service/*.log

@@ -1,0 +1,5 @@
+mkdir auth-service
+cd auth-service
+npm init -y
+npm install @prisma/client bcryptjs dotenv express jsonwebtoken winston express-rate-limit
+npm install -D prisma nodemon 
